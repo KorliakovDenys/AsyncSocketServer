@@ -1,27 +1,26 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Денис\\RiderProjects\\NP_PW_Server_1\\NP_PW_Server_1\\NP_PW_Server_1.csproj": {}
+    "/Users/denys_korliakov/Desktop/C#/NP_PW_Server_1/NP_PW_Server_1/NP_PW_Server_1.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Денис\\RiderProjects\\NP_PW_Server_1\\NP_PW_Server_1\\NP_PW_Server_1.csproj": {
+    "/Users/denys_korliakov/Desktop/C#/NP_PW_Server_1/NP_PW_Server_1/NP_PW_Server_1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Денис\\RiderProjects\\NP_PW_Server_1\\NP_PW_Server_1\\NP_PW_Server_1.csproj",
+        "projectUniqueName": "/Users/denys_korliakov/Desktop/C#/NP_PW_Server_1/NP_PW_Server_1/NP_PW_Server_1.csproj",
         "projectName": "NP_PW_Server_1",
-        "projectPath": "C:\\Users\\Денис\\RiderProjects\\NP_PW_Server_1\\NP_PW_Server_1\\NP_PW_Server_1.csproj",
-        "packagesPath": "C:\\Users\\Денис\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Денис\\RiderProjects\\NP_PW_Server_1\\NP_PW_Server_1\\obj\\",
+        "projectPath": "/Users/denys_korliakov/Desktop/C#/NP_PW_Server_1/NP_PW_Server_1/NP_PW_Server_1.csproj",
+        "packagesPath": "/Users/denys_korliakov/.nuget/packages/",
+        "outputPath": "/Users/denys_korliakov/Desktop/C#/NP_PW_Server_1/NP_PW_Server_1/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Денис\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/Users/denys_korliakov/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "/usr/local/share/dotnet/library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -45,7 +44,8 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -54,7 +54,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/6.0.403/RuntimeIdentifierGraph.json"
         }
       }
     }
