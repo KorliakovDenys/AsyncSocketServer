@@ -1,6 +1,10 @@
-﻿using NP_PW_Server_1;
+﻿using System.Net;
+using System.Text;
 
-var server = new AsyncServer("192.168.100.100", 1024);
-server.Start();
-Console.Read();
+namespace NP_PW_Server_1;
 
+class Program {
+    public static async Task Main(string[] args) {
+        await AsyncServer.StartListeningAsync();
+    }
+}

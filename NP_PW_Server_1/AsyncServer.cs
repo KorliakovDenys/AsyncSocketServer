@@ -1,86 +1,66 @@
 ﻿using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
 namespace NP_PW_Server_1;
 
-internal class AsyncServer{
-    private readonly IPEndPoint _endPoint;
-    private Socket _socket;
+internal class AsyncServer {
+    private static readonly IPAddress LOCALHOST = IPAddress.Parse("127.0.0.1");
 
+    private static byte[] _buffer = new byte[1024];
 
-    private static void AcceptCallBack(IAsyncResult asyncResult){
-        if (asyncResult.AsyncState is not Socket socket) return;
+    public static async Task StartListeningAsync() {
+        var ipAddress = IPAddress.TryParse("192.168.100.101", out var validatedIpAddress)
+            ? validatedIpAddress
+            : LOCALHOST;
+        var port = 8888;
 
-        var ns = socket.EndAccept(asyncResult);
+        var listener = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-        Console.WriteLine(ns.RemoteEndPoint);
+        try {
+            listener.Bind(new IPEndPoint(ipAddress, port));
+            listener.Listen(10);
 
-        var sendBuffer = System.Text.Encoding.Unicode.GetBytes(DateTime.Now.ToShortTimeString());
+            Console.WriteLine($"Server started listening on {ipAddress}:{port}");
 
-        ns.BeginSend(sendBuffer, 0, sendBuffer.Length, SocketFlags.None, SendCallBack, ns);
+            while (true) {
+                var handler = await listener.AcceptAsync();
+                Console.WriteLine($"Accepted connection from {handler.RemoteEndPoint}");
 
-        socket.BeginAccept(AcceptCallBack, socket);
+                Task.Run(() => HandleRequestAsync(handler));
+            }
+        }
+        catch (Exception exception) {
+            Console.WriteLine($"Error occurred {exception.Message}");
+        }
     }
 
-    private static void SendCallBack(IAsyncResult asyncResult){
-        if (asyncResult.AsyncState is not Socket socket) return;
+    private static async Task HandleRequestAsync(Socket handler) {
+        try {
+            while (true) {
+                var bytesRead = await handler.ReceiveAsync(new ArraySegment<byte>(_buffer), SocketFlags.None);
+                if (bytesRead == 0) {
+                    Console.WriteLine($"Connection closed by {handler.RemoteEndPoint}");
+                }
 
-        socket.EndSend(asyncResult);
-        socket.Shutdown(SocketShutdown.Send);
-        socket.Close();
-    }
+                var request = Encoding.Unicode.GetString(_buffer, 0, bytesRead);
+                Console.WriteLine($"Receive data from {handler.RemoteEndPoint}: {request}");
 
-    public AsyncServer(string ip, int port){
-        _endPoint = IPAddress.TryParse(ip, out var validatedIpAddress)
-            ? new IPEndPoint(validatedIpAddress, port)
-            : new IPEndPoint(IPAddress.Any, port);
-    }
+                var message = request.ToLower() switch {
+                    "time" => DateTime.Now.ToShortTimeString(),
+                    "date" => DateTime.Now.ToLongDateString(),
+                    _ => "undefined"
+                };
 
-    public void Start(){
-        if (_socket != null) return;
-
-        _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-        _socket.Bind(_endPoint);
-        _socket.Listen(10);
-        _socket.BeginAccept(AcceptCallBack, _socket);
+                var response = Encoding.Unicode.GetBytes(message);
+                await handler.SendAsync(new ArraySegment<byte>(response, 0, response.Length), SocketFlags.None);
+            }
+        }
+        catch (Exception exception) {
+            Console.WriteLine($"Error occurred: {exception.Message}");
+        }
+        finally {
+            handler.Close();
+        }
     }
 }
-
-//
-// private readonly IPEndPoint _endP;
-// private Socket _socket;
-//
-// public AsyncServer(string strAddr, int port){
-//     _endP = new IPEndPoint(IPAddress.Parse(strAddr), port);
-// }
-//
-// private static void MyAcceptCallbackFunction(IAsyncResult ia){
-//     var socket = (Socket)ia.AsyncState;
-//     var ns = socket?.EndAccept(ia);
-//
-//     Console.WriteLine(ns.RemoteEndPoint.ToString());
-//
-//
-//     var sendBuffer =
-//         System.Text.Encoding.ASCII.GetBytes(DateTime.Now.ToString());
-//
-//     ns.BeginSend(sendBuffer, 0, sendBuffer.Length, SocketFlags.None, MySendCallbackFunction, ns);
-//
-//     socket.BeginAccept(MyAcceptCallbackFunction, socket);
-// }
-//
-// private static void MySendCallbackFunction(IAsyncResult ia){
-//     var ns = (Socket)ia.AsyncState;
-//     var n = ns.EndSend(ia);
-//     ns.Shutdown(SocketShutdown.Send);
-//     ns.Close();
-// }
-//
-// public void StartServer(){
-//     if (_socket != null)
-//         return;
-//     _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
-//     _socket.Bind(_endP);
-//     _socket.Listen(10);
-//     _socket.BeginAccept(MyAcceptCallbackFunction, _socket);
-// }
